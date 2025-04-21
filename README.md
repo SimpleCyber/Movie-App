@@ -97,3 +97,13 @@
             ```
                 /// <reference types="nativewind/types" />
             ```
+
+
+
+# Phase 2 : Routing and Navigation
+        - home
+        - search
+        - saved
+        - profile
+    
+    Bottom navigation bar is done :)
