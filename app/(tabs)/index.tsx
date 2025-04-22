@@ -1,4 +1,4 @@
-import SearchBar from "@/components/searchbar";
+import SearchBar from "@/components/SearchBar";
 import { icons } from "@/constants/icons";
 import { images } from "@/constants/images";
 import { Link } from "expo-router";
