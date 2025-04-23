@@ -1,13 +1,15 @@
 import { Stack } from "expo-router";
 import './globals.css'
 import { StatusBar } from "react-native";
+import GlobalProvider from "../context/GlobalProvider";
 
 export default function RootLayout() {
   return (
     <>
+    <GlobalProvider>
     <StatusBar
-            backgroundColor="#030013" // background color for Android
-            barStyle="light-content" // content color: 'light-content' or 'dark-content'
+            backgroundColor="#030013" 
+            barStyle="light-content" 
       />
       <Stack>
     
@@ -19,7 +21,12 @@ export default function RootLayout() {
       name="movies/[id]"
       options={{headerShown:false}}
     />
+    <Stack.Screen 
+      name="(auth)"
+      options={{headerShown:false}}
+    />
   </Stack>
+  </GlobalProvider>
     </>
   )
 }
