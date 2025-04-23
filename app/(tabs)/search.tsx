@@ -6,21 +6,23 @@ import { icons } from "@/constants/icons";
 
 import useFetch from "@/services/usefetch";
 import { fetchMovies } from "@/services/api";
-// import { updateSearchCount } from "@/services/appwrite";
+import { updateSearchCount } from "@/services/appwrite";
 
 import SearchBar from "@/components/SearchBar";
-import MovieDisplayCard from "@/components/MovieCard";
+import MovieCard from "@/components/MovieCard";
 
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const {
-    data: movies = [],
+    data: movies,
     loading,
     error,
     refetch: loadMovies,
     reset,
-  } = useFetch(() => fetchMovies({ query: searchQuery }), false);
+  } = useFetch(() => fetchMovies({ 
+    query: searchQuery 
+  }),false);
 
   const handleSearch = (text: string) => {
     setSearchQuery(text);
@@ -30,19 +32,20 @@ const Search = () => {
   useEffect(() => {
     const timeoutId = setTimeout(async () => {
       if (searchQuery.trim()) {
-        await loadMovies();
-
-        // Call updateSearchCount only if there are results
-        if (movies?.length! > 0 && movies?.[0]) {
-          // await updateSearchCount(searchQuery, movies[0]);
-        }
+        await loadMovies();        
       } else {
         reset();
       }
-    }, 500);
+    }, 700);
 
     return () => clearTimeout(timeoutId);
   }, [searchQuery]);
+
+  useEffect(() =>{
+    if (movies?.length! > 0 && movies?.[0]) {
+      updateSearchCount(searchQuery, movies[0]);
+    }
+  },[movies])
 
   return (
     <View className="flex-1 bg-primary">
@@ -54,16 +57,20 @@ const Search = () => {
 
       <FlatList
         className="px-5"
-        data={movies as Movie[]}
+        data={movies}
+        renderItem={({ item }) => <MovieCard {...item} />}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <MovieDisplayCard {...item} />}
+        
         numColumns={3}
+
         columnWrapperStyle={{
-          justifyContent: "flex-start",
+          justifyContent: "center",
           gap: 16,
           marginVertical: 16,
         }}
+
         contentContainerStyle={{ paddingBottom: 100 }}
+
         ListHeaderComponent={
           <>
             <View className="w-full flex-row justify-center mt-20 items-center">
