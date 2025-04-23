@@ -14,6 +14,7 @@ import CustomButton from "../../components/CustomButton";
 import FormField from "../../components/FormField";
 import { useGlobalContext } from "../../context/GlobalProvider";
 import { icons } from "@/constants/icons";
+import { images } from "@/constants/images";
 
 const SignUp = () => {
   const { setUser, setIsLoggedIn } = useGlobalContext(); // FIXED: Changed setIsLogged to setIsLoggedIn
@@ -50,6 +51,7 @@ const SignUp = () => {
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <Image source={images.bg} className="absolute w-full z-0" />
         <View className="w-full justify-center items-center min-h-[85vh] px-6 my-6">
           {/* Centered logo */}
           <TouchableOpacity

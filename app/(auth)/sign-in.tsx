@@ -56,6 +56,7 @@ const SignIn = () => {
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <Image source={images.bg} className="absolute w-full z-0" />
         {/* Added top padding to push content down */}
         <View className="w-full justify-center items-center min-h-[70vh] px-6 pt-16 pb-8">
           {/* Centered logo with additional top margin */}
