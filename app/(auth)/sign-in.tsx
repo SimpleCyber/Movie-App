@@ -75,7 +75,7 @@ const SignIn = () => {
 
           {/* Centered heading with improved styling */}
           <Text className="text-3xl text-white font-bold mb-10 text-center">
-            Log In to Movies Flex
+            Sign In to Movies Flex
           </Text>
 
           {/* Form fields with more spacing */}
