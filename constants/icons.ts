@@ -19,15 +19,27 @@ import logout from "@/assets/icons/logout.png";
 import eyeHide from "@/assets/icons/eye-hide.png";
 import eye from "@/assets/icons/eye.png";
 import fullscreen from "@/assets/icons/fullscreen.png";
+import refresh from "@/assets/icons/refresh.png";
+import right from "@/assets/icons/right.png";
+import check from "@/assets/icons/check.png";
+import trash from "@/assets/icons/trash.png";
+
+
+
+
 
 import play2 from "@/assets/icons/play copy.png";
 
 export const icons = {
+  trash,
+  check,
   home2, 
+  right,
   search2,
   play2,
   home,
   person,
+  refresh,
   logo,
   save,
   star,
