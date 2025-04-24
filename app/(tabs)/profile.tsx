@@ -9,6 +9,7 @@ import {
   signOut, 
   getCurrentUser, 
   addNoteToList, 
+  toggleNoteStatus,
   removeNoteFromList 
 } from "../../lib/appwrite"; 
 
@@ -44,8 +45,7 @@ const Profile = () => {
           name: userData.username || userData.name || '',
           email: userData.email || '',
           avatarUrl: userData.avatarUrl || '',
-          savedMoviesCount: userData.saved_movies?.length ||
-             0,
+          savedMoviesCount: userData.saved_movies?.length || 0,
           joinDate: formatDate(userData.$createdAt || new Date().toISOString()),
           notes: Array.isArray(userData.notes) ? userData.notes : []
         });
@@ -57,7 +57,7 @@ const Profile = () => {
     }
   };
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { 
       year: 'numeric', 
@@ -65,6 +65,7 @@ const Profile = () => {
       day: 'numeric' 
     });
   };
+  
 
   // Logout function
   const logout = async () => {
@@ -102,18 +103,39 @@ const Profile = () => {
     }
   };
 
+  // Toggle note completion status
+  const toggleNote = async (index: number) => {
+    try {
+      await toggleNoteStatus(index);
+      await fetchUserProfile();
+    } catch (error) {
+      console.error("Failed to update note:", error);
+      Alert.alert("Error", "Failed to update the note");
+    }
+  };
+
   // Delete a note
   const deleteNote = async (index: number) => {
     try {
-      // Use the API function to remove the note by index
       await removeNoteFromList(index);
-      
-      // Refresh the profile to get updated notes
       await fetchUserProfile();
     } catch (error) {
       console.error("Failed to delete note:", error);
       Alert.alert("Error", "Failed to delete the note");
     }
+  };
+
+  // Helper to check if a note is completed
+  const isNoteCompleted = (note: string) => {
+    return note.startsWith('[1]');
+  };
+
+  // Helper to get clean note text without status indicator
+  const getNoteText = (note: string) => {
+    if (note.startsWith('[0]') || note.startsWith('[1]')) {
+      return note.substring(3);
+    }
+    return note;
   };
 
   // If loading global state or fetching profile
@@ -168,7 +190,7 @@ const Profile = () => {
         
         {/* Movie List */}
         <View className="mt-6">
-          <Text className="text-white text-lg font-semibold mb-4">Movie List Items</Text>
+          <Text className="text-white text-lg font-semibold mb-4">Create your movie list:</Text>
           
           {/* Add new movie to list */}
           <View className="flex-row mb-4">
@@ -178,7 +200,7 @@ const Profile = () => {
               placeholderTextColor="#666"
               value={newNote}
               onChangeText={setNewNote}
-              maxLength={100} // Limit input length
+              maxLength={97} 
             />
             <TouchableOpacity 
               onPress={addNote}
@@ -202,7 +224,16 @@ const Profile = () => {
           ) : (
             profileData.notes.map((note, index) => (
               <View key={index} className="flex-row items-center bg-gray-800 p-4 rounded-xl mb-2">
-                <Text className="flex-1 text-white">{note}</Text>
+                <TouchableOpacity onPress={() => toggleNote(index)} className="mr-3">
+                  <View className={`w-6 h-6 rounded-sm border border-gray-400 justify-center items-center ${isNoteCompleted(note) ? 'bg-green-500 border-green-500' : ''}`}>
+                    {isNoteCompleted(note) && (
+                      <Image source={icons.check || require('@/assets/icons/check.png')} className="w-4 h-4" tintColor="#fff" />
+                    )}
+                  </View>
+                </TouchableOpacity>
+                <Text className={`flex-1 text-white ${isNoteCompleted(note) ? 'line-through text-gray-400' : ''}`}>
+                  {getNoteText(note)}
+                </Text>
                 <TouchableOpacity onPress={() => deleteNote(index)}>
                   <Image source={icons.trash || require('@/assets/icons/trash.png')} className="w-5 h-5" tintColor="#ff6b6b" />
                 </TouchableOpacity>
