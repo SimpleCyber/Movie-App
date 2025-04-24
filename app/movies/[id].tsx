@@ -9,11 +9,15 @@ import {
   Modal,
   StatusBar,
 } from "react-native";
+
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WebView } from "react-native-webview";
+import { getCurrentUser, databases, account, appWriteConfig } from "../../lib/appwrite";
+import { useGlobalContext } from "../../context/GlobalProvider";
+
 
 import { icons } from "@/constants/icons";
 import useFetch from "@/services/usefetch";
@@ -33,6 +37,9 @@ const MovieInfo = ({ label, value }: MovieInfoProps) => (
   </View>
 );
 
+
+
+
 const MovieDetails = () => {
   const router = useRouter();
   const { id } = useLocalSearchParams();
@@ -40,6 +47,34 @@ const MovieDetails = () => {
   const [trailerKey, setTrailerKey] = useState<string | null>(null);
   const [showTrailer, setShowTrailer] = useState(false);
   const [fullScreenMode, setFullScreenMode] = useState(false);
+  const { setUser, setIsLoggedIn } = useGlobalContext(); 
+  const [isSaved, setIsSaved] = useState(false);
+
+
+
+  useEffect(() => {
+    const checkIfSaved = async () => {
+      const user = await getCurrentUser();
+      if (user?.saved_movies?.includes(id)) {
+        setIsSaved(true);
+      } else {
+        setIsSaved(false);
+      }
+    };
+  
+    if (id) {
+      checkIfSaved();
+    }
+  }, [id]);
+
+
+  const handleToggle = async () => {
+    await toggleSaveMovie(id as string);
+    setIsSaved(prev => !prev);
+  };
+  
+  
+  
 
   const { data: movie, loading } = useFetch(() =>
     fetchMovieDetails(id as string)
@@ -56,11 +91,11 @@ const MovieDetails = () => {
           },
         }
       );
-    
+
       const trailer = res.data.results.find(
         (vid: any) => vid.type === "Trailer" && vid.site === "YouTube"
       );
-  
+
       if (trailer?.key) {
         setTrailerKey(trailer.key);
         setShowTrailer(true);
@@ -83,6 +118,43 @@ const MovieDetails = () => {
     setFullScreenMode(!fullScreenMode);
   };
 
+  const toggleSaveMovie = async (id: string | number) => {
+    try {
+      const user = await getCurrentUser();
+      if (!user) throw new Error('User not logged in');
+  
+      let updatedSavedMovies = [...user.saved_movies];
+      const index = updatedSavedMovies.indexOf(id);
+  
+      if (index === -1) {
+        // Add movie
+        updatedSavedMovies.push(id);
+        console.log(`Movie with ID ${id} added to saved_movies`);
+      } else {
+        // Remove movie
+        updatedSavedMovies.splice(index, 1);
+        console.log(`Movie with ID ${id} removed from saved_movies`);
+      }
+  
+      // Update the user document in Appwrite
+      await databases.updateDocument(
+        appWriteConfig.databaseId,
+        appWriteConfig.userCollectionId,
+        user.$id,
+        {
+          saved_movies: updatedSavedMovies,
+        }
+      );
+  
+    } catch (error) {
+      console.error('Error toggling movie save:', error);
+    }
+  };
+
+
+  
+  
+
   if (loading)
     return (
       <SafeAreaView className="bg-primary flex-1">
@@ -98,15 +170,15 @@ const MovieDetails = () => {
         onRequestClose={() => setFullScreenMode(false)}
         animationType="fade"
         statusBarTranslucent
-        supportedOrientations={['landscape']}
+        supportedOrientations={["landscape"]}
       >
         <View className="flex-1 bg-black">
           <StatusBar hidden />
-          
+
           {trailerKey && (
             <WebView
-              source={{ 
-                uri: `https://www.youtube.com/embed/${trailerKey}?autoplay=1&controls=1&playsinline=0` 
+              source={{
+                uri: `https://www.youtube.com/embed/${trailerKey}?autoplay=1&controls=1&playsinline=0`,
               }}
               style={{ flex: 1 }}
               javaScriptEnabled
@@ -115,7 +187,7 @@ const MovieDetails = () => {
               mediaPlaybackRequiresUserAction={false}
             />
           )}
-          
+
           <TouchableOpacity
             className="absolute top-10 right-5 bg-black/50 rounded-full p-2"
             onPress={() => setFullScreenMode(false)}
@@ -130,25 +202,27 @@ const MovieDetails = () => {
           {showTrailer && trailerKey ? (
             <View className="w-full h-[550px] relative">
               <WebView
-                source={{ uri: `https://www.youtube.com/embed/${trailerKey}?autoplay=1&controls=1` }}
+                source={{
+                  uri: `https://www.youtube.com/embed/${trailerKey}?autoplay=1&controls=1`,
+                }}
                 className="w-full h-full"
                 javaScriptEnabled
                 domStorageEnabled
               />
-              
+
               <TouchableOpacity
                 className="absolute top-5 right-5 bg-black/50 rounded-full p-2"
                 onPress={closeTrailer}
               >
                 <Text className="text-white text-xl font-bold">✕</Text>
               </TouchableOpacity>
-              
+
               <TouchableOpacity
                 className="absolute bottom-5 right-5 bg-black rounded-full p-2"
                 onPress={toggleFullScreen}
               >
-                <Image 
-                  source={icons.fullscreen} 
+                <Image
+                  source={icons.fullscreen}
                   className="size-5"
                   tintColor="#fff"
                 />
@@ -184,7 +258,19 @@ const MovieDetails = () => {
         </View>
 
         <View className="flex-col items-start justify-center mt-5 px-5">
-          <Text className="text-white font-bold text-xl">{movie?.title}</Text>
+          <View className="flex-row justify-between w-[22.3rem]">
+            <Text className="text-white font-bold text-xl">{movie?.title}</Text>
+
+            <TouchableOpacity onPress={handleToggle}>
+              <Image
+                source={isSaved ? icons.bookmark : icons.save}
+                className="w-7 h-7 ml-1"
+                resizeMode="stretch"
+              />
+            </TouchableOpacity>
+
+          </View>
+
           <View className="flex-row items-center gap-x-1 mt-2">
             <Text className="text-light-200 text-sm">
               {movie?.release_date?.split("-")[0]} •

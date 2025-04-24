@@ -19,7 +19,7 @@ import { useGlobalContext } from "../../context/GlobalProvider";
 import { icons } from "@/constants/icons";
 
 const SignIn = () => {
-  const { setUser, setIsLoggedIn } = useGlobalContext(); // FIXED: Changed setIsLogged to setIsLoggedIn
+  const { setUser, setIsLoggedIn } = useGlobalContext(); 
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     email: "",
@@ -39,7 +39,7 @@ const SignIn = () => {
       await signIn(form.email, form.password);
       const result = await getCurrentUser();
       setUser(result);
-      setIsLoggedIn(true); // FIXED: Changed setIsLogged to setIsLoggedIn
+      setIsLoggedIn(true); 
 
       Alert.alert("Success", "User Signed In Successfully");
       router.replace("/");
