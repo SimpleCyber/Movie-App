@@ -1,22 +1,9 @@
-// saved.tsx (Main Page)
-import { useEffect, useCallback, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useGlobalContext } from "@/context/GlobalProvider";
-import { router } from "expo-router";
+// hooks/useSavedMovies.ts
+import { useState, useEffect, useCallback } from 'react';
 import { getCurrentUser } from "@/lib/appwrite";
 import { fetchMovieById } from "@/services/api";
-import { ActivityIndicator, Image, View } from "react-native";
-import { images } from "@/constants/images";
 
-// Imported Components
-import LoadingScreen from "@/components/LoadingScreen";
-import EmptySavedState from "@/components/saved/EmptySavedState";
-import AppHeader from "@/components/saved/AppHeader";
-import SavedMoviesList from "@/components/saved/SavedMoviesList";
-
-const saved = () => {
-  const { isLoading, isLoggedIn } = useGlobalContext();
-
+export const useSavedMovies = () => {
   const [savedMovieIds, setSavedMovieIds] = useState<string[]>([]);
   const [savedMovies, setSavedMovies] = useState<Movie[]>([]);
   const [loadingMovies, setLoadingMovies] = useState(true);
@@ -42,7 +29,7 @@ const saved = () => {
       setLoadingMovies(true);
       const moviePromises = savedMovieIds.map((id) => fetchMovieById({ id }));
       const movies = await Promise.all(moviePromises);
-
+      
       setSavedMovies(movies);
     } catch (err) {
       console.error("Failed to fetch saved movies", err);
@@ -70,38 +57,10 @@ const saved = () => {
     fetchSavedMovies();
   }, [savedMovieIds]);
 
-  useEffect(() => {
-    if (!isLoading && !isLoggedIn) {
-      router.replace("/sign-in");
-    }
-  }, [isLoading, isLoggedIn]);
-
-  if (isLoading || loadingMovies) {
-    return <LoadingScreen />;
-  }
-
-  return (
-    <SafeAreaView className="bg-primary flex-1">
-      <Image
-        source={images.bg}
-        className="absolute w-full"
-        resizeMode="cover"
-      />
-
-      {savedMovies.length === 0 ? (
-        <EmptySavedState onRefresh={onRefresh} />
-      ) : (
-        <>
-          <AppHeader />
-          <SavedMoviesList
-            savedMovies={savedMovies}
-            onRefresh={onRefresh}
-            refreshing={refreshing}
-          />
-        </>
-      )}
-    </SafeAreaView>
-  );
+  return {
+    savedMovies,
+    loadingMovies,
+    refreshing,
+    onRefresh
+  };
 };
-
-export default saved;
