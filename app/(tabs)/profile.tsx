@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import { icons } from "@/constants/icons";
 import { router } from "expo-router";
-import { signOut } from "../../lib/appwrite"; // Import signOut function
+import { signOut } from "../../lib/appwrite"; 
 
 const Profile = () => {
   const { isLoading, isLoggedIn, setUser, setIsLoggedIn } = useGlobalContext();

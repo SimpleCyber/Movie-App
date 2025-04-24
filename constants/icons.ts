@@ -18,6 +18,8 @@ import rightArrow from "@/assets/icons/right-arrow.png";
 import logout from "@/assets/icons/logout.png";
 import eyeHide from "@/assets/icons/eye-hide.png";
 import eye from "@/assets/icons/eye.png";
+import fullscreen from "@/assets/icons/fullscreen.png";
+
 import play2 from "@/assets/icons/play copy.png";
 
 export const icons = {
@@ -42,4 +44,5 @@ export const icons = {
   logout,
   eyeHide,
   eye,
+  fullscreen,
 };

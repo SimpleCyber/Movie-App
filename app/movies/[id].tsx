@@ -1,4 +1,3 @@
-
 import {
   View,
   Text,
@@ -6,9 +5,15 @@ import {
   ActivityIndicator,
   ScrollView,
   TouchableOpacity,
+  Linking,
+  Modal,
+  StatusBar,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import axios from "axios";
+import { useState } from "react";
+import { WebView } from "react-native-webview";
 
 import { icons } from "@/constants/icons";
 import useFetch from "@/services/usefetch";
@@ -31,10 +36,52 @@ const MovieInfo = ({ label, value }: MovieInfoProps) => (
 const MovieDetails = () => {
   const router = useRouter();
   const { id } = useLocalSearchParams();
+  const [loadingTrailer, setLoadingTrailer] = useState(false);
+  const [trailerKey, setTrailerKey] = useState<string | null>(null);
+  const [showTrailer, setShowTrailer] = useState(false);
+  const [fullScreenMode, setFullScreenMode] = useState(false);
 
   const { data: movie, loading } = useFetch(() =>
     fetchMovieDetails(id as string)
   );
+
+  const handlePlayTrailer = async () => {
+    try {
+      setLoadingTrailer(true);
+      const res = await axios.get(
+        `https://api.themoviedb.org/3/movie/${id}/videos`,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.EXPO_PUBLIC_MOVIE_API_KEY}`,
+          },
+        }
+      );
+    
+      const trailer = res.data.results.find(
+        (vid: any) => vid.type === "Trailer" && vid.site === "YouTube"
+      );
+  
+      if (trailer?.key) {
+        setTrailerKey(trailer.key);
+        setShowTrailer(true);
+      } else {
+        console.warn("No YouTube trailer found.");
+      }
+    } catch (err) {
+      console.error("Error fetching trailer:", err);
+    } finally {
+      setLoadingTrailer(false);
+    }
+  };
+
+  const closeTrailer = () => {
+    setShowTrailer(false);
+    setFullScreenMode(false);
+  };
+
+  const toggleFullScreen = () => {
+    setFullScreenMode(!fullScreenMode);
+  };
 
   if (loading)
     return (
@@ -45,23 +92,95 @@ const MovieDetails = () => {
 
   return (
     <View className="bg-primary flex-1">
+      {/* Full screen modal */}
+      <Modal
+        visible={fullScreenMode && showTrailer}
+        onRequestClose={() => setFullScreenMode(false)}
+        animationType="fade"
+        statusBarTranslucent
+        supportedOrientations={['landscape']}
+      >
+        <View className="flex-1 bg-black">
+          <StatusBar hidden />
+          
+          {trailerKey && (
+            <WebView
+              source={{ 
+                uri: `https://www.youtube.com/embed/${trailerKey}?autoplay=1&controls=1&playsinline=0` 
+              }}
+              style={{ flex: 1 }}
+              javaScriptEnabled
+              domStorageEnabled
+              allowsFullscreenVideo
+              mediaPlaybackRequiresUserAction={false}
+            />
+          )}
+          
+          <TouchableOpacity
+            className="absolute top-10 right-5 bg-black/50 rounded-full p-2"
+            onPress={() => setFullScreenMode(false)}
+          >
+            <Text className="text-white text-xl font-bold">✕</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
       <ScrollView contentContainerStyle={{ paddingBottom: 80 }}>
         <View>
-          <Image
-            source={{
-              uri: `https://image.tmdb.org/t/p/w500${movie?.poster_path}`,
-            }}
-            className="w-full h-[550px]"
-            resizeMode="stretch"
-          />
-
-          <TouchableOpacity className="absolute bottom-5 right-5 rounded-full size-14 bg-white flex items-center justify-center">
+          {showTrailer && trailerKey ? (
+            <View className="w-full h-[550px] relative">
+              <WebView
+                source={{ uri: `https://www.youtube.com/embed/${trailerKey}?autoplay=1&controls=1` }}
+                className="w-full h-full"
+                javaScriptEnabled
+                domStorageEnabled
+              />
+              
+              <TouchableOpacity
+                className="absolute top-5 right-5 bg-black/50 rounded-full p-2"
+                onPress={closeTrailer}
+              >
+                <Text className="text-white text-xl font-bold">✕</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                className="absolute bottom-5 right-5 bg-black rounded-full p-2"
+                onPress={toggleFullScreen}
+              >
+                <Image 
+                  source={icons.fullscreen} 
+                  className="size-5"
+                  tintColor="#fff"
+                />
+              </TouchableOpacity>
+            </View>
+          ) : (
             <Image
-              source={icons.play}
-              className="w-6 h-7 ml-1"
+              source={{
+                uri: `https://image.tmdb.org/t/p/w500${movie?.poster_path}`,
+              }}
+              className="w-full h-[550px]"
               resizeMode="stretch"
             />
-          </TouchableOpacity>
+          )}
+
+          {!showTrailer && (
+            <TouchableOpacity
+              className="absolute bottom-5 right-5 rounded-full size-14 bg-white flex items-center justify-center"
+              onPress={handlePlayTrailer}
+              disabled={loadingTrailer}
+            >
+              {loadingTrailer ? (
+                <ActivityIndicator size="small" color="black" />
+              ) : (
+                <Image
+                  source={icons.play}
+                  className="w-6 h-7 ml-1"
+                  resizeMode="stretch"
+                />
+              )}
+            </TouchableOpacity>
+          )}
         </View>
 
         <View className="flex-col items-start justify-center mt-5 px-5">

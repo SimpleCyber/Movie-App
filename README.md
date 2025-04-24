@@ -111,6 +111,8 @@
 
 
 # Phase 3 : Customise App title and icon
+
+# video play 
     
 # Phase 4 : create a app
     eas build -p android --profile preview
