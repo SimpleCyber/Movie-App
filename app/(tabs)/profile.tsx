@@ -1,68 +1,41 @@
-// Profile.tsx (Main Page)
-import { useEffect, useState } from "react";
+// Profile.tsx (Enhanced Main Page)
+import { useEffect, Suspense, lazy } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Image, ScrollView } from "react-native";
+import { Image, ScrollView, View } from "react-native";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import { images } from "@/constants/images";
 import { router } from "expo-router";
-import { signOut, getCurrentUser } from "../../lib/appwrite";
+import { signOut } from "../../lib/appwrite";
 
-// Imported Components
+// Custom Hooks
+import { useProfileData } from "@/hooks/useProfileData";
+
+// Core components (loaded immediately)
 import LoadingScreen from "@/components/LoadingScreen";
-import ProfileHeader from "@/components/profile/ProfileHeader";
-import ProfileActions from "@/components/profile/ProfileActions";
-import MovieNotesList from "@/components/profile/MovieNotesList";
-import LogoutButton from "@/components/profile/LogoutButton";
+import ProfileSkeleton from "@/components/profile/ProfileSkeleton";
+import ErrorView from "@/components/ErrorView";
+
+// Lazy loaded components
+const ProfileHeader = lazy(() => import("@/components/profile/ProfileHeader"));
+const ProfileActions = lazy(() => import("@/components/profile/ProfileActions"));
+const MovieNotesList = lazy(() => import("@/components/profile/MovieNotesList"));
+const LogoutButton = lazy(() => import("@/components/profile/LogoutButton"));
 
 const Profile = () => {
   const { isLoading, isLoggedIn, setUser, setIsLoggedIn } = useGlobalContext();
-  const [profileData, setProfileData] = useState({
-    name: "",
-    email: "",
-    avatarUrl: "",
-    savedMoviesCount: 0,
-    joinDate: "",
-    notes: [] as string[],
-  });
-  const [fetchingProfile, setFetchingProfile] = useState(true);
+  const { 
+    profileData, 
+    fetchingProfile, 
+    fetchUserProfile, 
+    error, 
+    retryFetch 
+  } = useProfileData();
 
   useEffect(() => {
     if (!isLoading && !isLoggedIn) {
       router.replace("/sign-in");
-    } else if (isLoggedIn) {
-      fetchUserProfile();
     }
   }, [isLoading, isLoggedIn]);
-
-  const fetchUserProfile = async () => {
-    try {
-      setFetchingProfile(true);
-      const userData = await getCurrentUser();
-      if (userData) {
-        setProfileData({
-          name: userData.username || userData.name || "",
-          email: userData.email || "",
-          avatarUrl: userData.avatarUrl || "",
-          savedMoviesCount: userData.saved_movies?.length || 0,
-          joinDate: formatDate(userData.$createdAt || new Date().toISOString()),
-          notes: Array.isArray(userData.notes) ? userData.notes : [],
-        });
-      }
-    } catch (error) {
-      console.error("Failed to fetch profile data:", error);
-    } finally {
-      setFetchingProfile(false);
-    }
-  };
-
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
 
   const logout = async () => {
     await signOut();
@@ -75,8 +48,17 @@ const Profile = () => {
     router.push("/saved");
   };
 
-  if (isLoading || fetchingProfile) {
+  if (isLoading) {
     return <LoadingScreen />;
+  }
+
+  if (error) {
+    return (
+      <ErrorView 
+        message="Failed to load profile data" 
+        onRetry={retryFetch}
+      />
+    );
   }
 
   return (
@@ -88,24 +70,30 @@ const Profile = () => {
       />
 
       <ScrollView className="flex-1 px-6">
-        <ProfileHeader
-          name={profileData.name}
-          email={profileData.email}
-          avatarUrl={profileData.avatarUrl}
-          joinDate={profileData.joinDate}
-        />
+        {fetchingProfile ? (
+          <ProfileSkeleton />
+        ) : (
+          <Suspense fallback={<ProfileSkeleton />}>
+            <ProfileHeader
+              name={profileData.name}
+              email={profileData.email}
+              avatarUrl={profileData.avatarUrl}
+              joinDate={profileData.joinDate}
+            />
 
-        <ProfileActions
-          savedMoviesCount={profileData.savedMoviesCount}
-          onGoToSavedMovies={goToSavedMovies}
-        />
+            <ProfileActions
+              savedMoviesCount={profileData.savedMoviesCount}
+              onGoToSavedMovies={goToSavedMovies}
+            />
 
-        <MovieNotesList
-          notes={profileData.notes}
-          onRefresh={fetchUserProfile}
-        />
+            <MovieNotesList
+              notes={profileData.notes}
+              onRefresh={fetchUserProfile}
+            />
 
-        <LogoutButton onLogout={logout} />
+            <LogoutButton onLogout={logout} />
+          </Suspense>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

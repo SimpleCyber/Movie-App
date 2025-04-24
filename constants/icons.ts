@@ -24,6 +24,7 @@ import right from "@/assets/icons/right.png";
 import check from "@/assets/icons/check.png";
 import trash from "@/assets/icons/trash.png";
 
+import error from "@/assets/icons/error.png";
 
 
 
@@ -33,6 +34,7 @@ import play2 from "@/assets/icons/play copy.png";
 export const icons = {
   trash,
   check,
+  error,
   home2, 
   right,
   search2,

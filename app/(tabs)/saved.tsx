@@ -11,7 +11,6 @@ import { images } from "@/constants/images";
 // Imported Components
 import LoadingScreen from "@/components/LoadingScreen";
 import EmptySavedState from "@/components/saved/EmptySavedState";
-import AppHeader from "@/components/saved/AppHeader";
 import SavedMoviesList from "@/components/saved/SavedMoviesList";
 
 const saved = () => {
@@ -92,7 +91,7 @@ const saved = () => {
         <EmptySavedState onRefresh={onRefresh} />
       ) : (
         <>
-          <AppHeader />
+          
           <SavedMoviesList
             savedMovies={savedMovies}
             onRefresh={onRefresh}

@@ -3,6 +3,8 @@ import React from "react";
 import { View, Text, Image, TouchableOpacity, FlatList, ScrollView, RefreshControl } from "react-native";
 import { icons } from "@/constants/icons";
 import MovieCard from "@/components/MovieCard";
+import AppHeader from "@/components/saved/AppHeader";
+
 
 interface SavedMoviesListProps {
   savedMovies: Movie[];
@@ -17,6 +19,8 @@ const SavedMoviesList = ({ savedMovies, onRefresh, refreshing }: SavedMoviesList
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ minHeight: "100%", paddingBottom: 10 }}
     >
+      <AppHeader />
+
       <View className="flex-row items-center justify-between mb-5 mt-7 px-5">
         <View className="flex-row items-center">
           <Image source={icons.bookmark} className="w-7 h-7" />
