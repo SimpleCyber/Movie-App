@@ -6,7 +6,7 @@ App : Created with the react native using the tmdb api to showcase the Movies de
 
 | Home | Details | Search | Profile | Saved |
 |------|---------|--------|---------|-------|
-| ![home](/image/home.jpg) | ![details](https://github.com/Movie-App/image/deatil.jpg) | ![search](https://github.com/Movie-App/image/search.jpg) | ![profile](https://github.com/Movie-App/image/profile.jpg) | ![saved](https://github.com/Movie-App/image/saved.jpg) |
+| ![home](/image/home.jpg) | ![details](/image/deatil.jpg) | ![search](/image/search.jpg) | ![profile](/image/profile.jpg) | ![saved](/image/saved.jpg) |
 
 ---
 
