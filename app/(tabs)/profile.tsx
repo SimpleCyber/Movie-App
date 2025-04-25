@@ -69,7 +69,10 @@ const Profile = () => {
         resizeMode="cover"
       />
 
-      <ScrollView className="flex-1 px-6">
+      <ScrollView 
+      className="flex-1 px-6"
+      contentContainerStyle={{  paddingBottom: 80 }}
+      >
         {fetchingProfile ? (
           <ProfileSkeleton />
         ) : (
