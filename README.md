@@ -1,5 +1,15 @@
 ### 🎬 **Movie App **
 
+App : Created with the react native using the tmdb api to showcase the Movies description and save the movies.
+
+### 🖼️ App Screenshots
+
+| Home | Details | Search | Profile | Saved |
+|------|---------|--------|---------|-------|
+| ![home](https://github.com/Movie-App/image/home.jpg) | ![details](https://github.com/Movie-App/image/deatil.jpg) | ![search](https://github.com/Movie-App/image/search.jpg) | ![profile](https://github.com/Movie-App/image/profile.jpg) | ![saved](https://github.com/Movie-App/image/saved.jpg) |
+
+---
+
 #### ✅ **Phase 1: Setup & Configuration**
 - **Initial Setup:**
   ```bash
@@ -62,10 +72,4 @@
 
 ---
 
-### 🖼️ App Screenshots
 
-| Home | Details | Search | Profile | Saved |
-|------|---------|--------|---------|-------|
-| ![home](https://github.com/Movie-App/image/home.png) | ![details](https://github.com/Movie-App/image/deatils.png) | ![search](https://github.com/Movie-App/image/search.png) | ![profile](https://github.com/Movie-App/image/profile.png) | ![saved](https://github.com/Movie-App/image/saved.png) |
-
----
