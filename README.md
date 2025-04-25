@@ -1,148 +1,71 @@
-# Movie-App
+### 🎬 **Movie App **
 
-# Phase 1 : Setup React native
+#### ✅ **Phase 1: Setup & Configuration**
+- **Initial Setup:**
+  ```bash
+  npx create-expo-app@latest
+  npx expo start
+  ```
+- **Project Structure Highlights:**
+  | File/Folder          | Description                                                  |
+  |----------------------|--------------------------------------------------------------|
+  | `tsconfig.json`      | TypeScript safety enforcement                                |
+  | `README.md`          | Project information                                          |
+  | `package.json`       | Project dependencies and scripts                             |
+  | `package-lock.json`  | Exact dependency versions                                    |
+  | `app.json`           | App configuration and metadata                               |
+  | `.gitignore`         | Excluded files from Git tracking                             |
+  | `/app`               | Contains app pages and routing logic                         |
 
-    npx create-expo-app@latest
-    
-    - This will create all the files and folders
-  
-    npx expo start 
-
-    - Connect with the mobile expo go , live changes are visible here
-
-# 1.1 : Understanding the basic file structure
-
-    - tsconfig.json : impose the ts saftery through the project
-    - Readme : information about the project
-    - packagelock.json & package.json : project dependencies and metadata
-  
-    - app.json : configuration for the project , also known as app config, change the behaviour of the project
-    - gitignore : ignore the important files
-
-    - app [Folder] : help us in routes
-
-# 1.2 : Development started
-     
-     npm run reset-project
-     No
-
-
-# 1.3 : Additional packages
+- **Tailwind + Nativewind Integration:**
+  - Installed packages:
+    ```bash
     npm install nativewind tailwindcss react-native-reanimated react-native-safe-area-context
+    ```
+  - Setup files:
+    - `tailwind.config.js`: Tailwind config with custom colors and paths
+    - `globals.css`: Tailwind directives
+    - `babel.config.js`: Add Nativewind presets
+    - `metro.config.js`: Customized for Nativewind
+    - `nativewind-env.d.ts`: Type definitions
 
+---
 
-    - Lets create the configration file
-        1. npx tailwindcss init
-        2. Update tailwind.config.js
-            ```
-            /** @type {import('tailwindcss').Config} */
-                module.exports = {
-                // NOTE: Update this to include the paths to all of your component files.
-                content: ["./app/**/*.{js,jsx,ts,tsx}"],
-                presets: [require("nativewind/preset")],
-                theme: {
-                    extend: {
-                    colors:{
-                        primary :'#030014',
-                        secondary :'#151312',
-                        accent : '#AB8BFF',
-                        light : {
-                        100 : '#D6CF77',
-                        200: '#A8B5DB',
-                        300: '#9CA4AB',
-                        },
-                        dark :{
-                        100 : '#221F3D',
-                        200: '#0F0D23',
-                        }
-                    }
-                    },
-                },
-                plugins: [],
-                }
-            ```
-        
-        3. in app folder / create globals.css
-            ```
-                @tailwind base;
-                @tailwind components;
-                @tailwind utilities;
-            ```
+#### 🚀 **Phase 2: Navigation Setup**
+- **Implemented Pages**:
+  - `Home`
+  - `Search`
+  - `Saved`
+  - `Profile`
 
+- **Bottom Navigation Bar:** ✅ Completed using React Navigation
 
+---
 
-        4. crate babel.config.js in root folder
-            ```
-                module.exports = function (api) {
-                    api.cache(true);
-                    return {
-                    presets: [
-                        ["babel-preset-expo", { jsxImportSource: "nativewind" }],
-                        "nativewind/babel",
-                    ],
-                    };
-                };
-            ```
-        5. npx expo customize metro.config.js  this will create it
+#### 🎨 **Phase 3: App Customization**
+- Customized **App Title** and **Icon**
+- Playing videos integrated
 
-            ```
-            const { getDefaultConfig } = require("expo/metro-config");
-            const { withNativeWind } = require('nativewind/metro');
+---
 
-            const config = getDefaultConfig(__dirname)
+#### 🔎 **Phase 4: Feature Development**
+- **Search Movies** via TMDB API
+- **Movie Details Page**: Poster, Trailer, Save Option
+- **Saved/Watchlist Page**: View saved movies
+- **Profile Page**: Login/Logout, Notes, Custom List
 
-            module.exports = withNativeWind(config, { input: './app/globals.css' })
-            ```
-        6. create nativewind-env.d.ts in root folder
-            ```
-                /// <reference types="nativewind/types" />
-            ```
+- **Data Sources:**
+  - **TMDB API** – Trending movies, top 5 by user searches
+  - **Appwrite DB** – Store and fetch saved movies
+- **Technologies Used**: 
+  - React Native, Expo, NativeWind, Appwrite, TMDB API
 
+---
 
+### 🖼️ App Screenshots
 
-# Phase 2 : Routing and Navigation
-        - home
-        - search
-        - saved
-        - profile
-    
-    Bottom navigation bar is done :)
+| Home | Details | Search | Profile | Saved |
+|------|---------|--------|---------|-------|
+| ![home](https://github.com/Movie-App/image/home.png) | ![details](https://github.com/Movie-App/image/deatils.png) | ![search](https://github.com/Movie-App/image/search.png) | ![profile](https://github.com/Movie-App/image/profile.png) | ![saved](https://github.com/Movie-App/image/saved.png) |
 
-
-
-# Phase 3 : Customise App title and icon
-
-# video play 
-    
-# Phase 4 : create a app
-    eas build -p android --profile preview
-
-
-
-  ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-  █ ▄▄▄▄▄ █▄▄▄ ▀ ██ ▄█▀▄ ▀███▄█▀█ ▄▄▄▄▄ █
-  █ █   █ ██▄▀ █  █▄▀ █▀ ▄ ▀ ▄█ █ █   █ █
-  █ █▄▄▄█ ██▀▄ ▄▀▀██ █▄██▀▀██ █▄█ █▄▄▄█ █
-  █▄▄▄▄▄▄▄█ ▀▄█ ▀▄█▄█ ▀ █ █▄▀ ▀ █▄▄▄▄▄▄▄█
-  █ ▄█▄▄▀▄▀█ ▀█▄▀▀▀▀▄▀  █▀ ▄█ ███▄▀▀██▀▄█
-  █ ▄▄▄▀▄▄█▀  █▄█▀▄▄▀▄█▄▄▄▄██▀ ▀▄▄▄▄▄ ▄▄█
-  █▄█  █▀▄▄ ▀██ ▀▄▀▄█▀█▀▀▄▀ ▀█ ▀█▄▄▀ ▀ ▄█
-  ██▀▄█ ▀▄▄█▀▄█▄█▀ █▄▀ ▄▄█▀▀█▀▄▀▀▄▀▄█▀▄ █
-  ██▀▄▀▄█▄▄ ▄█▄▀▄█  ▀▄ ▄█ ▄█▄  █▀▄██ ▄▄▄█
-  █ ▀▀▄  ▄  ▄▄ ▄ ▀ ▀▄█▄▀▄ ▄▄  ▄▀▀█▄▀▀██ █
-  █▀▀▄▀ ▄▄▄▀ ▄▀▀█  ▀   ▄██▀███ ▄ ▄▀  ▀ ▄█
-  █▀█▄██▄▄▄▀▀▀ ██ ▄  ██ ▄▀▄▀▄ ▄██  ▄▀▀▀ █
-  █  ▀█  ▄  █▄ ▀█▄  █▄▄▄█▀ ▄█   █▄▄▀█▀▀▄█
-  █ ▄██  ▄█▄█ █▀▄▀▄▄▄ ▄█▄ ███▄ █▄█ ▀  ▄ █
-  █▄███▄█▄▄ ▄█▄▄▄█  ▀▄  ▀▀▄▄▄▀█ ▄▄▄ █  ██
-  █ ▄▄▄▄▄ ██▀█▄█ █▄▀▄▄ ▀█▀    █ █▄█  ▄▀ █
-  █ ▄▄▄▄▄ ██▀█▄█ █▄▀▄▄ ▀█▀    █ █▄█  ▄▀ █
-  █ █   █ █   ▀▄██▀ ▄▄▀██▀ ▄█▄ ▄  ▄▄ █▄▄█
-  █ ▄▄▄▄▄ ██▀█▄█ █▄▀▄▄ ▀█▀    █ █▄█  ▄▀ █
-  █ █   █ █   ▀▄██▀ ▄▄▀██▀ ▄█▄ ▄  ▄▄ █▄▄█
-  █ █▄▄▄█ █▀██ ███▄ ▀██▀█▀▄█▄▄ ██▀▄ █ ▀ █
-  █▄▄▄▄▄▄▄█▄▄█▄██▄███▄▄████▄███▄▄▄██▄██▄█
-
-
-🤖 Open this link on your Android devices (or scan the QR code) to install the app:
-https://expo.dev/accounts/dear_coder03/projects/movie-app/builds/80c44cf5-2179-4a77-9357-2da8e45ea564
+---
