@@ -1,4 +1,4 @@
-### 🎬 **Movie App **
+### 🎬 Movie App 
 
 App : Created with the react native using the tmdb api to showcase the Movies description and save the movies.
 
