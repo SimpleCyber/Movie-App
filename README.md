@@ -10,6 +10,12 @@ App : Created with the react native using the tmdb api to showcase the Movies de
 
 ---
 
+### ⬇️ Download the app from here
+
+![home](/image/image.png)
+
+---
+
 #### ✅ **Phase 1: Setup & Configuration**
 - **Initial Setup:**
   ```bash

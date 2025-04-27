@@ -26,11 +26,10 @@ const SignIn = () => {
     password: "",
   });
 
-  // ---------------------------------------------------- 🌿🌿🌿🌿
   const submit = async () => {
     if (form.email === "" || form.password === "") {
       Alert.alert("Error", "Please fill in all the fields");
-      return; // Added return to prevent further execution
+      return;
     }
 
     setSubmitting(true);
@@ -51,34 +50,30 @@ const SignIn = () => {
       setSubmitting(false);
     }
   };
-  // ---------------------------------------------------- 🌿🌿🌿🌿
 
+  // Modified to use Link instead of TouchableOpacity with router.replace
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <Image source={images.bg} className="absolute w-full z-0" />
-        {/* Added top padding to push content down */}
+        <Image source={images.bg} className="absolute w-full z-0" />
         <View className="w-full justify-center items-center min-h-[70vh] px-6 pt-16 pb-8">
-          {/* Centered logo with additional top margin */}
+          {/* Replaced TouchableOpacity with Link component for smoother navigation */}
           <View className="w-full items-center mb-8 mt-10">
-            <TouchableOpacity
-              onPress={() => router.replace("/")}
-              className="w-full items-center mb-8 mt-10"
-            >
-              <Image
-                source={icons.logo}
-                resizeMode="contain"
-                className="w-[150px] h-[45px]"
-              />
-            </TouchableOpacity>
+            <Link href="/" asChild>
+              <TouchableOpacity className="w-full items-center">
+                <Image
+                  source={icons.logo}
+                  resizeMode="contain"
+                  className="w-[150px] h-[45px]"
+                />
+              </TouchableOpacity>
+            </Link>
           </View>
 
-          {/* Centered heading with improved styling */}
           <Text className="text-3xl text-white font-bold mb-10 text-center">
             Sign In to Movies Flex
           </Text>
 
-          {/* Form fields with more spacing */}
           <View className="w-full">
             <FormField
               title="Email"
@@ -93,9 +88,9 @@ const SignIn = () => {
               value={form.password}
               handleChangeText={(e) => setForm({ ...form, password: e })}
               otherStyles="mb-8"
+              secureTextEntry={true}
             />
 
-            {/* Wider button */}
             <CustomButton
               title="Sign In"
               handlePress={submit}
@@ -104,7 +99,6 @@ const SignIn = () => {
             />
           </View>
 
-          {/* Better spaced sign up link */}
           <View className="flex-row justify-center items-center mt-4">
             <Text className="text-lg text-gray-300 font-regular">
               Don't have an account?

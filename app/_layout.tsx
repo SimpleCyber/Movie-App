@@ -5,7 +5,6 @@ import GlobalProvider from "../context/GlobalProvider";
 
 export default function RootLayout() {
   return (
-    <>
     <GlobalProvider>
     <StatusBar
             backgroundColor="#030013" 
@@ -27,6 +26,5 @@ export default function RootLayout() {
     />
   </Stack>
   </GlobalProvider>
-    </>
   )
 }

@@ -1,28 +1,27 @@
-// Profile.tsx (Enhanced Main Page)
-import { useEffect, Suspense, lazy } from "react";
+import { useEffect, useState } from "react";  // Remove Suspense, lazy
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Image, ScrollView, View } from "react-native";
+import { Image, ScrollView, View, Text, ActivityIndicator } from "react-native";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import { images } from "@/constants/images";
 import { router } from "expo-router";
 import { signOut } from "../../lib/appwrite";
 
-// Custom Hooks
-import { useProfileData } from "@/hooks/useProfileData";
-
-// Core components (loaded immediately)
+// Direct imports instead of lazy loading
+import ProfileHeader from "@/components/profile/ProfileHeader";
+import ProfileActions from "@/components/profile/ProfileActions";
+import MovieNotesList from "@/components/profile/MovieNotesList";
+import LogoutButton from "@/components/profile/LogoutButton";
 import LoadingScreen from "@/components/LoadingScreen";
 import ProfileSkeleton from "@/components/profile/ProfileSkeleton";
 import ErrorView from "@/components/ErrorView";
 
-// Lazy loaded components
-const ProfileHeader = lazy(() => import("@/components/profile/ProfileHeader"));
-const ProfileActions = lazy(() => import("@/components/profile/ProfileActions"));
-const MovieNotesList = lazy(() => import("@/components/profile/MovieNotesList"));
-const LogoutButton = lazy(() => import("@/components/profile/LogoutButton"));
+// Custom Hooks
+import { useProfileData } from "@/hooks/useProfileData";
 
 const Profile = () => {
   const { isLoading, isLoggedIn, setUser, setIsLoggedIn } = useGlobalContext();
+  const [initialRender, setInitialRender] = useState(true);
+  
   const { 
     profileData, 
     fetchingProfile, 
@@ -31,11 +30,30 @@ const Profile = () => {
     retryFetch 
   } = useProfileData();
 
+  // Handle first render and navigation
   useEffect(() => {
-    if (!isLoading && !isLoggedIn) {
-      router.replace("/sign-in");
-    }
+    console.log("Profile: Auth state check:", { isLoading, isLoggedIn });
+    
+    // Add a slight delay for initial render to ensure we have correct auth state
+    const timer = setTimeout(() => {
+      setInitialRender(false);
+      
+      if (!isLoading && !isLoggedIn) {
+        console.log("Not logged in, redirecting to sign-in");
+        router.replace("/sign-in");
+      }
+    }, 300);
+    
+    return () => clearTimeout(timer);
   }, [isLoading, isLoggedIn]);
+  
+  // Only fetch profile data when we're sure user is logged in
+  useEffect(() => {
+    if (!isLoading && isLoggedIn && !initialRender) {
+      console.log("Fetching user profile data");
+      fetchUserProfile();
+    }
+  }, [isLoading, isLoggedIn, initialRender]);
 
   const logout = async () => {
     await signOut();
@@ -48,8 +66,21 @@ const Profile = () => {
     router.push("/saved");
   };
 
-  if (isLoading) {
-    return <LoadingScreen />;
+  // Show loading during authentication check
+  if (isLoading || initialRender) {
+    return (
+      <SafeAreaView style={{flex: 1, backgroundColor: '#121212'}}>
+        <Image
+          source={images.bg}
+          style={{position: 'absolute', width: '100%'}}
+          resizeMode="cover"
+        />
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <ActivityIndicator size="large" color="#FFFFFF" />
+          <Text style={{color: '#FFFFFF', marginTop: 10}}>Loading profile...</Text>
+        </View>
+      </SafeAreaView>
+    );
   }
 
   if (error) {
@@ -76,7 +107,7 @@ const Profile = () => {
         {fetchingProfile ? (
           <ProfileSkeleton />
         ) : (
-          <Suspense fallback={<ProfileSkeleton />}>
+          <>
             <ProfileHeader
               name={profileData.name}
               email={profileData.email}
@@ -95,7 +126,7 @@ const Profile = () => {
             />
 
             <LogoutButton onLogout={logout} />
-          </Suspense>
+          </>
         )}
       </ScrollView>
     </SafeAreaView>

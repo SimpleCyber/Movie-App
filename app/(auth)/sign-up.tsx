@@ -17,7 +17,7 @@ import { icons } from "@/constants/icons";
 import { images } from "@/constants/images";
 
 const SignUp = () => {
-  const { setUser, setIsLoggedIn } = useGlobalContext(); // FIXED: Changed setIsLogged to setIsLoggedIn
+  const { setUser, setIsLoggedIn } = useGlobalContext();
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     username: "",
@@ -25,18 +25,17 @@ const SignUp = () => {
     password: "",
   });
 
-  // ---------------------------------------------------- 🌿🌿🌿🌿
   const submit = async () => {
     if (form.username === "" || form.email === "" || form.password === "") {
       Alert.alert("Error", "Please fill in all the fields");
-      return; // Added return to prevent further execution
+      return;
     }
 
     setSubmitting(true);
     try {
       const result = await createUser(form.email, form.password, form.username);
       setUser(result);
-      setIsLoggedIn(true); // FIXED: Changed setIsLogged to setIsLoggedIn
+      setIsLoggedIn(true);
       router.replace("/");
     } catch (error) {
       const errorMessage =
@@ -46,31 +45,29 @@ const SignUp = () => {
       setSubmitting(false);
     }
   };
-  // ---------------------------------------------------- 🌿🌿🌿🌿
 
   return (
     <SafeAreaView className="bg-primary h-full">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <Image source={images.bg} className="absolute w-full z-0" />
         <View className="w-full justify-center items-center min-h-[85vh] px-6 my-6">
-          {/* Centered logo */}
-          <TouchableOpacity
-            onPress={() => router.replace("/")}
-            className="w-full items-center mb-8"
-          >
-            <Image
-              source={icons.logo}
-              resizeMode="contain"
-              className="w-[150px] h-[45px]"
-            />
-          </TouchableOpacity>
+          {/* Replaced TouchableOpacity with Link component for smoother navigation */}
+          <View className="w-full items-center mb-8">
+            <Link href="/" asChild>
+              <TouchableOpacity className="w-full items-center">
+                <Image
+                  source={icons.logo}
+                  resizeMode="contain"
+                  className="w-[150px] h-[45px]"
+                />
+              </TouchableOpacity>
+            </Link>
+          </View>
 
-          {/* Centered heading with improved styling */}
           <Text className="text-3xl text-white font-bold mb-10 text-center">
             Sign Up to Movies Flex
           </Text>
 
-          {/* Form fields with more spacing */}
           <View className="w-full">
             <FormField
               title="Username"
@@ -92,9 +89,9 @@ const SignUp = () => {
               value={form.password}
               handleChangeText={(e) => setForm({ ...form, password: e })}
               otherStyles="mb-8"
+              secureTextEntry={true}
             />
 
-            {/* Wider button */}
             <CustomButton
               title="Sign Up"
               handlePress={submit}
@@ -103,7 +100,6 @@ const SignUp = () => {
             />
           </View>
 
-          {/* Better spaced login link */}
           <View className="flex-row justify-center items-center mt-4">
             <Text className="text-lg text-gray-300 font-regular">
               Have an account already?
