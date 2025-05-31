@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #030014;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-poppins: "Poppins", sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #030014;
+    --foreground: #d6c7ff;
+  }
+}
+
+.dark {
+  --background: #030014;
+  --foreground: #d6c7ff;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Inter", sans-serif;
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #ac7ffe, #d6c7ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.font-poppins {
+  font-family: "Poppins", sans-serif;
+}
