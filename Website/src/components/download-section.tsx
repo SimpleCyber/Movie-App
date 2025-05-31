@@ -20,7 +20,7 @@ export default function DownloadSection() {
         background:
           theme === "dark"
             ? "linear-gradient(135deg, rgba(172, 127, 254, 0.1), rgba(147, 51, 234, 0.1))"
-            : "linear-gradient(135deg, rgba(172, 127, 254, 0.05), rgba(147, 51, 234, 0.05))",
+            : "#f9fafb",
       }}
     >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -64,7 +64,7 @@ export default function DownloadSection() {
           <div
             className="rounded-xl p-6 max-w-2xl mx-auto border"
             style={{
-              backgroundColor: theme === "dark" ? "rgba(3, 0, 20, 0.5)" : "rgba(255, 255, 255, 0.8)",
+              backgroundColor: theme === "dark" ? "rgba(3, 0, 20, 0.5)" : "rgba(255, 255, 255, 0.9)",
               borderColor: theme === "dark" ? "#221f3d" : "#e5e7eb",
             }}
           >
