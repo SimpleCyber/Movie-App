@@ -14,6 +14,8 @@ App : Created with the react native using the tmdb api to showcase the Movies de
 
 ![home](/image/image.png)
 
+Link : https://expo.dev/accounts/dear_coder03/projects/movie-app/builds/80c44cf5-2179-4a77-9357-2da8e45ea564
+
 ---
 
 #### ✅ **Phase 1: Setup & Configuration**
