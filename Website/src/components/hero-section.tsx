@@ -8,8 +8,9 @@ import RotatingPhone from "./rotating-phone"
 const features = [
   "Browse trending movies",
   "Search, view details, and save to watchlist",
+  "Watch trailer here, before watching movies",
   "Profile with login/logout",
-  "Smooth UI with NativeWind",
+
 ]
 
 export default function HeroSection() {
