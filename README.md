@@ -10,9 +10,9 @@ App : Created with the react native using the tmdb api to showcase the Movies de
 
 ---
 
-### ⬇️ Download the app from here
+### ⬇️ Download the app from here : https://movie404.vercel.app/
 
-![home](/image/image.png)
+
 
 Link : movieApp.apk
 ---
